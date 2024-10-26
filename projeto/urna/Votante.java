@@ -1,5 +1,5 @@
 package urna;
-// Votante
+
 public class Votante {
     private String nome;
     private boolean jaVotou;
