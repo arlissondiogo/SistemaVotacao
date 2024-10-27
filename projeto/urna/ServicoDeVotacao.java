@@ -5,7 +5,7 @@ public class ServicoDeVotacao {
         GerenciadorDeVotacao gerenciador = GerenciadorDeVotacao.getInstancia();
         Votacao votacao = gerenciador.getVotacao();
 
-        // Verifica se o votante já votou
+
         for (Votante votante : votacao.getVotantes()) {
             if (votante.getNome().equalsIgnoreCase(nomeVotante)) {
                 System.out.println("Votante " + votante.getNome() + " já votou.");
@@ -13,7 +13,7 @@ public class ServicoDeVotacao {
             }
         }
 
-        // Apenas registra o voto se a votação estiver aberta
+
         if (votacao.getEstado() == EstadoDaVotacao.ABERTA) {
             Votante novoVotante = new Votante(nomeVotante);
             votacao.adicionarVotante(novoVotante);
