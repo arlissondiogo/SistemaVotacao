@@ -1,4 +1,4 @@
-package urna;
+package projeto;
 
 public class OpcaoDeVoto {
     private String nome;
