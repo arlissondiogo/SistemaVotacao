@@ -7,7 +7,6 @@ public class SistemaDeVotacao {
         GerenciadorDeVotacao gerenciador = GerenciadorDeVotacao.getInstancia();
         ServicoDeVotacao servico = new ServicoDeVotacao();
 
-        // Iniciar a votação
         gerenciador.iniciarVotacao();
         System.out.println(gerenciador.getVotacao());
 
@@ -16,7 +15,7 @@ public class SistemaDeVotacao {
             String nomeVotante = scanner.nextLine();
 
             if (nomeVotante.equalsIgnoreCase("sair")) {
-                break; // Sai do loop se o usuário digitar 'sair'
+                break; 
             }
 
             System.out.println("Escolha uma opção para votar:");
@@ -27,11 +26,9 @@ public class SistemaDeVotacao {
             int escolha = Integer.parseInt(scanner.nextLine());
             OpcaoDeVoto opcaoSelecionada = gerenciador.getVotacao().getOpcoes().get(escolha - 1);
             
-            // Chama o método de votação passando o nome do votante e a opção
             servico.votar(nomeVotante, opcaoSelecionada);
         }
 
-        // Encerrar a votação
         gerenciador.encerrarVotacao();
         System.out.println("\nEstado final da votação:");
         System.out.println(gerenciador.getVotacao());
