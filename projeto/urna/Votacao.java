@@ -9,10 +9,9 @@ class Votacao {
     private List<Votante> votantes;
 
     public Votacao() {
-        this.estado = EstadoDaVotacao.ABERTA; // Estado inicial
+        this.estado = EstadoDaVotacao.ABERTA;
         this.opcoes = new ArrayList<>();
         this.votantes = new ArrayList<>();
-        // Adicionando opções de voto
         opcoes.add(new OpcaoDeVoto("Candidato A"));
         opcoes.add(new OpcaoDeVoto("Candidato B"));
     }
