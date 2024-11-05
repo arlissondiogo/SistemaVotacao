@@ -11,22 +11,68 @@ public class SistemaDeVotacaoGUI {
     private JComboBox<String> opcaoComboBox;
     private JButton votarButton, sairButton;
     private JLabel messageLabel;
+    private GerenciadorDeVotacaoProxy gerenciadorProxy;
 
     public SistemaDeVotacaoGUI() {
-        // Configuração do Frame
+        // Instancia o proxy
+        gerenciadorProxy = new GerenciadorDeVotacaoProxy();
+
+        // Exibe a janela de autenticação do administrador
+        exibirJanelaAutenticacao();
+    }
+
+    private void exibirJanelaAutenticacao() {
+        JFrame authFrame = new JFrame("Autenticação do Administrador");
+        authFrame.setSize(300, 200);
+        authFrame.setLocationRelativeTo(null);
+        authFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel authPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        authPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JTextField nomeAdminField = new JTextField();
+        JTextField cpfAdminField = new JTextField();
+        JPasswordField senhaAdminField = new JPasswordField();
+
+        authPanel.add(new JLabel("Nome:"));
+        authPanel.add(nomeAdminField);
+        authPanel.add(new JLabel("CPF:"));
+        authPanel.add(cpfAdminField);
+        authPanel.add(new JLabel("Senha:"));
+        authPanel.add(senhaAdminField);
+
+        JButton loginButton = new JButton("Login");
+        loginButton.addActionListener(e -> {
+            String nome = nomeAdminField.getText().trim();
+            String cpf = cpfAdminField.getText().trim();
+            String senha = new String(senhaAdminField.getPassword()).trim();
+
+            if (gerenciadorProxy.autenticar(nome, cpf, senha)) {
+                gerenciadorProxy.iniciarVotacao(nome, cpf, senha);
+                authFrame.dispose();
+                exibirJanelaVotacao();
+            } else {
+                JOptionPane.showMessageDialog(authFrame, "Credenciais inválidas. Tente novamente.", "Erro de Autenticação", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        authPanel.add(loginButton);
+        authFrame.add(authPanel);
+        authFrame.setVisible(true);
+    }
+
+    private void exibirJanelaVotacao() {
         frame = new JFrame("Sistema de Votação");
-        frame.setSize(450, 300);
+        frame.setSize(450, 350);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
-        // Painel Principal
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Bordas ao redor
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Painel de Dados do Votante
         JPanel voterPanel = new JPanel(new GridBagLayout());
-        voterPanel.setBackground(new Color(240, 240, 240)); // Cor de fundo leve
+        voterPanel.setBackground(new Color(240, 240, 240));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -54,28 +100,26 @@ public class SistemaDeVotacaoGUI {
 
         mainPanel.add(voterPanel);
 
-        // Seção de Opção de Voto
         JPanel optionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        optionPanel.setBackground(new Color(230, 230, 230)); // Cor de fundo leve
+        optionPanel.setBackground(new Color(230, 230, 230));
         optionPanel.setBorder(BorderFactory.createTitledBorder("Escolha uma opção:"));
         opcaoComboBox = new JComboBox<>(new String[] {"Candidato A", "Candidato B"});
         optionPanel.add(opcaoComboBox);
 
         mainPanel.add(optionPanel);
 
-        // Botões de Votação e Sair
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        
         votarButton = new JButton("Votar");
         votarButton.addActionListener(new VoteAction());
-        buttonPanel.add(votarButton);
+        controlPanel.add(votarButton);
 
         sairButton = new JButton("Sair");
         sairButton.addActionListener(new SairAction());
-        buttonPanel.add(sairButton);
+        controlPanel.add(sairButton);
 
-        mainPanel.add(buttonPanel);
+        mainPanel.add(controlPanel);
 
-        // Label de Mensagem
         messageLabel = new JLabel(" ");
         messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         mainPanel.add(messageLabel);
@@ -92,13 +136,11 @@ public class SistemaDeVotacaoGUI {
             String titulo = tituloField.getText().trim();
             String opcao = (String) opcaoComboBox.getSelectedItem();
 
-            // Validação dos campos
             if (nome.isEmpty() || cpf.isEmpty() || titulo.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Processa o voto usando ServicoDeVotacao
             ServicoDeVotacao servico = new ServicoDeVotacao();
             OpcaoDeVoto opcaoDeVoto = new OpcaoDeVoto(opcao);
             String mensagem = servico.votar(nome, cpf, titulo, opcaoDeVoto);
@@ -110,12 +152,43 @@ public class SistemaDeVotacaoGUI {
     private class SairAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            int confirm = JOptionPane.showConfirmDialog(frame, "Tem certeza de que deseja encerrar a votação?", "Encerrar Votação", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                GerenciadorDeVotacao.getInstancia().encerrarVotacao();
-                JOptionPane.showMessageDialog(frame, "A votação foi encerrada.", "Encerramento", JOptionPane.INFORMATION_MESSAGE);
-                frame.dispose(); // Fecha a janela
-            }
+            JFrame authFrame = new JFrame("Autenticação para Encerrar Votação");
+            authFrame.setSize(300, 200);
+            authFrame.setLocationRelativeTo(frame);
+            authFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JPanel authPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+            authPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            JTextField nomeAdminField = new JTextField();
+            JTextField cpfAdminField = new JTextField();
+            JPasswordField senhaAdminField = new JPasswordField();
+
+            authPanel.add(new JLabel("Nome:"));
+            authPanel.add(nomeAdminField);
+            authPanel.add(new JLabel("CPF:"));
+            authPanel.add(cpfAdminField);
+            authPanel.add(new JLabel("Senha:"));
+            authPanel.add(senhaAdminField);
+
+            JButton confirmButton = new JButton("Confirmar");
+            confirmButton.addActionListener(evt -> {
+                String nome = nomeAdminField.getText().trim();
+                String cpf = cpfAdminField.getText().trim();
+                String senha = new String(senhaAdminField.getPassword()).trim();
+
+                if (gerenciadorProxy.autenticar(nome, cpf, senha)) {
+                    gerenciadorProxy.encerrarVotacao(nome, cpf, senha);
+                    authFrame.dispose();
+                    frame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(authFrame, "Credenciais inválidas. Tente novamente.", "Erro de Autenticação", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+
+            authPanel.add(confirmButton);
+            authFrame.add(authPanel);
+            authFrame.setVisible(true);
         }
     }
 
