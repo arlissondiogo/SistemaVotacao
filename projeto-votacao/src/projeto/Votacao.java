@@ -14,7 +14,6 @@ public class Votacao {
         this.opcoes = new ArrayList<>();
         this.votantes = new ArrayList<>();
 
-        // Adicionando opções de voto
         opcoes.add(new OpcaoDeVoto("Taylor Swift"));
         opcoes.add(new OpcaoDeVoto("Kanye West"));
     }
@@ -23,7 +22,6 @@ public class Votacao {
         this.estado = novoEstado;
         estado.manipularRequisicao(this);
 
-        // Conta os votos e exibe os resultados ao encerrar a votação
         if (novoEstado == EstadoDaVotacao.FECHADA) {
             contarVotos();
         }
