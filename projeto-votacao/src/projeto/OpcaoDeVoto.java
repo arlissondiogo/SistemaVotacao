@@ -2,7 +2,7 @@ package projeto;
 
 public class OpcaoDeVoto {
     private String nome;
-    private int votos;  // Adiciona contador de votos para cada opção
+    private int votos; 
 
     public OpcaoDeVoto(String nome) {
         this.nome = nome;
