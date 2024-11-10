@@ -14,10 +14,7 @@ public class SistemaDeVotacaoGUI {
     private GerenciadorDeVotacaoProxy gerenciadorProxy;
 
     public SistemaDeVotacaoGUI() {
-        // Instancia o proxy
         gerenciadorProxy = new GerenciadorDeVotacaoProxy();
-
-        // Exibe a janela de autenticação do administrador
         exibirJanelaAutenticacao();
     }
 
