@@ -4,15 +4,14 @@ import javax.swing.JOptionPane;
 
 public class GerenciadorDeVotacaoProxy {
     private GerenciadorDeVotacao gerenciador;
-    private static final String ADMIN_NOME = "admin";       // Nome de administrador pré-definido
-    private static final String ADMIN_CPF = "1234567890";   // CPF de administrador pré-definido
-    private static final String ADMIN_SENHA = "senha123";   // Senha de administrador pré-definida
+    private static final String ADMIN_NOME = "admin";       
+    private static final String ADMIN_CPF = "1234567890";   
+    private static final String ADMIN_SENHA = "senha123";   
 
     public GerenciadorDeVotacaoProxy() {
         this.gerenciador = GerenciadorDeVotacao.getInstancia();
     }
 
-    // Alterado de private para public para permitir acesso externo
     public boolean autenticar(String nome, String cpf, String senha) {
         return ADMIN_NOME.equals(nome) && ADMIN_CPF.equals(cpf) && ADMIN_SENHA.equals(senha);
     }

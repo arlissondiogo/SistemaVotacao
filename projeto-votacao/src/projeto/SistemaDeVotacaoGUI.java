@@ -1,9 +1,9 @@
 package projeto;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
 
 public class SistemaDeVotacaoGUI {
     private JFrame frame;
@@ -14,10 +14,7 @@ public class SistemaDeVotacaoGUI {
     private GerenciadorDeVotacaoProxy gerenciadorProxy;
 
     public SistemaDeVotacaoGUI() {
-        // Instancia o proxy
         gerenciadorProxy = new GerenciadorDeVotacaoProxy();
-
-        // Exibe a janela de autenticação do administrador
         exibirJanelaAutenticacao();
     }
 
@@ -103,13 +100,13 @@ public class SistemaDeVotacaoGUI {
         JPanel optionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         optionPanel.setBackground(new Color(230, 230, 230));
         optionPanel.setBorder(BorderFactory.createTitledBorder("Escolha uma opção:"));
-        opcaoComboBox = new JComboBox<>(new String[] {"Candidato A", "Candidato B"});
+        opcaoComboBox = new JComboBox<>(new String[] {"Taylor Swift", "Kanye West"});
         optionPanel.add(opcaoComboBox);
 
         mainPanel.add(optionPanel);
 
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        
+
         votarButton = new JButton("Votar");
         votarButton.addActionListener(new VoteAction());
         controlPanel.add(votarButton);
